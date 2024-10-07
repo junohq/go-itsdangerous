@@ -1,9 +1,11 @@
-package itsdangerous
+package itsdangerous_test
 
 import (
 	"errors"
 	"testing"
 	"time"
+
+	"github.com/junohq/go-itsdangerous"
 )
 
 // Example values here generated from Python using generate_examples.py script
@@ -19,7 +21,7 @@ func TestSignerSign(t *testing.T) {
 	for _, test := range tests {
 		test := test
 		t.Run(test.input, func(t *testing.T) {
-			sig := NewSigner("secret_key", "salt")
+			sig := itsdangerous.NewSigner("secret_key", "salt")
 
 			actual := sig.Sign(test.input)
 			if actual != test.expected {
@@ -43,14 +45,14 @@ func TestSignerUnsign(t *testing.T) {
 	for _, test := range tests {
 		test := test
 		t.Run(test.input, func(t *testing.T) {
-			sig := NewSigner("secret_key", "salt")
+			sig := itsdangerous.NewSigner("secret_key", "salt")
 
 			actual, err := sig.Unsign(test.input)
 			if test.expectError {
 				if err == nil {
 					t.Fatalf("Unsign(%s) expected error; got no error", test.input)
 				}
-				if !errors.As(err, &InvalidSignatureError{}) {
+				if !errors.As(err, &itsdangerous.InvalidSignatureError{}) {
 					t.Fatalf("Unsign(%s) expected InvalidSignatureError; got %T(%s)", test.input, err, err.Error())
 				}
 			} else {
@@ -83,11 +85,11 @@ func TestTimestampSignerSign(t *testing.T) {
 		test := test
 		t.Run(test.input, func(t *testing.T) {
 			if !test.now.IsZero() {
-				NowFunc = func() time.Time { return test.now }
-				defer func() { NowFunc = time.Now }()
+				itsdangerous.NowFunc = func() time.Time { return test.now }
+				defer func() { itsdangerous.NowFunc = time.Now }()
 			}
 
-			sig := NewTimestampSigner("secret_key", "salt")
+			sig := itsdangerous.NewTimestampSigner("secret_key", "salt")
 
 			actual := sig.Sign(test.input)
 			if actual != test.expected {
@@ -128,26 +130,26 @@ func TestTimestampSignerUnsign(t *testing.T) {
 		test := test
 		t.Run(test.input, func(t *testing.T) {
 			if !test.now.IsZero() {
-				NowFunc = func() time.Time { return test.now }
-				defer func() { NowFunc = time.Now }()
+				itsdangerous.NowFunc = func() time.Time { return test.now }
+				defer func() { itsdangerous.NowFunc = time.Now }()
 			}
 
-			sig := NewTimestampSigner("secret_key", "salt")
+			sig := itsdangerous.NewTimestampSigner("secret_key", "salt")
 
 			actual, err := sig.Unsign(test.input, test.maxAge)
 			if test.expectError {
 				if err == nil {
 					t.Fatalf("Unsign(%s) expected error; got no error", test.input)
 				}
-				if !errors.As(err, &InvalidSignatureError{}) {
+				if !errors.As(err, &itsdangerous.InvalidSignatureError{}) {
 					t.Fatalf("Unsign(%s) expected InvalidSignatureError; got %T(%s)", test.input, err, err.Error())
 				}
 				if test.expectExpired {
-					if !errors.As(err, &SignatureExpiredError{}) {
+					if !errors.As(err, &itsdangerous.SignatureExpiredError{}) {
 						t.Fatalf("Unsign(%s) expected SignatureExpiredError; got %T(%s)", test.input, err, err.Error())
 					}
 				} else {
-					if errors.As(err, &SignatureExpiredError{}) {
+					if errors.As(err, &itsdangerous.SignatureExpiredError{}) {
 						t.Fatalf("Unsign(%s) expected not to get a SignatureExpiredError; got %s", test.input, err.Error())
 					}
 				}
