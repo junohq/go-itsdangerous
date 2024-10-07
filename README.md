@@ -1,7 +1,10 @@
-[![license](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/iromli/go-itsdangerous/blob/master/LICENSE)
-[![Test](https://github.com/iromli/go-itsdangerous/actions/workflows/test.yml/badge.svg)](https://github.com/iromli/go-itsdangerous/actions/workflows/test.yml)
+[![license](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/junohq/go-itsdangerous/blob/master/LICENSE)
 
 go-itsdangerous
 ===============
 
-Like [itsdangerous](https://pythonhosted.org/itsdangerous/) but for Go.
+Like [itsdangerous](https://itsdangerous.palletsprojects.com/) but for Go.
+
+This is originally based on https://github.com/iromli/go-itsdangerous, but
+forked here as that seems unmaintained. Also the public API here has drifted
+significantly from that version.
